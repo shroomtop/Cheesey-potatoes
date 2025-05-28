@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-950 text-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <title>Cheesy Potato Calculator</title>
+  <meta name="description" content="Cheesy Mashed Potato Calculator by Shroomtop420™">
+  <link rel="icon" href="https://www.shroomtop420.com/favicon.ico"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif; }
+    .glass { background: rgba(30,27,75,0.95); backdrop-filter: blur(8px);}
+    .neon { text-shadow: 0 0 10px #fbbf24aa, 0 0 30px #a78bfa99;}
+    ::selection { background: #fbbf2433; }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { appearance: textfield;}
+    /* Mobile touch target */
+    input, button, summary { touch-action: manipulation; }
+    /* Fix details on mobile */
+    details > summary { list-style: none; }
+    @media (max-width: 480px) {
+      h1 { font-size: 1.6rem !important; }
+      h2 { font-size: 1.1rem !important; }
+      main { padding: 1.1rem !important; }
+      .glass { padding: 1.1rem !important; }
+      .rounded-2xl { border-radius: 1rem !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start py-2 px-1 bg-gradient-to-br from-purple-950 via-indigo-950 to-gray-950">
+
+  <header class="w-full text-center my-3">
+    <h1 class="text-3xl md:text-4xl font-extrabold neon text-amber-400 drop-shadow-lg leading-tight">🧀 Cheesy Potato Calculator</h1>
+    <p class="text-base mt-1 text-violet-200 font-medium">Get the perfect cheesy mashed potato recipe for any crowd!</p>
+  </header>
+
+  <main class="glass rounded-2xl shadow-lg max-w-sm w-full p-4 space-y-4 mx-auto">
+    <div class="flex flex-col items-center space-y-2">
+      <label for="people" class="text-base font-semibold text-violet-300">How many people?</label>
+      <input id="people" type="number" min="1" max="100" value="18"
+        class="text-center w-20 p-2 rounded-lg bg-gray-800 text-amber-200 border border-amber-300 font-bold text-xl focus:ring-2 focus:ring-amber-400 outline-none transition"/>
+    </div>
+
+    <section>
+      <h2 class="text-lg font-bold text-amber-400 mb-2 text-center">Ingredients Needed</h2>
+      <div id="ingredients" class="space-y-1 text-sm font-medium text-violet-100"></div>
+    </section>
+
+    <details class="bg-gray-800 rounded-md px-3 py-2 text-amber-200 shadow-inner w-full">
+      <summary class="cursor-pointer font-semibold text-base mb-1 select-none">Show Steps & Tips</summary>
+      <ol class="list-decimal pl-5 mt-2 space-y-0.5 text-amber-100 text-sm">
+        <li>Peel & chop potatoes.</li>
+        <li>Boil in salted water (15–20 min).</li>
+        <li>Drain, let steam dry, mash with butter & cream cheese.</li>
+        <li>Mix in milk, shredded cheese, and seasoning.</li>
+        <li>Optional: Bake with more cheese for crust.</li>
+      </ol>
+      <ul class="mt-2 list-disc pl-5 text-amber-200 text-xs">
+        <li>Keep warm in slow cooker with extra milk.</li>
+        <li>Add garlic, chives, or sour cream for flavor.</li>
+      </ul>
+    </details>
+
+    <footer class="pt-3 text-center text-xs text-gray-400">
+      <span>Shroomtop420™ | <a href="https://www.shroomtop420.com/" class="underline text-amber-300">Brand</a> | <a href="https://github.com/shroomtop" class="underline text-amber-300">GitHub</a></span>
+    </footer>
+  </main>
+
+  <script>
+    // Per-person base values
+    const perPerson = {
+      potatoes: 0.33,      // lbs
+      butter: 1,           // tbsp
+      creamCheese: 0.5,    // oz
+      cheese: 0.25,        // cups shredded
+      milk: 2,             // tbsp
+    };
+
+    function roundTo(value, step) {
+      // For nice display (ex: 6.1 => 6, 6.7 => 6.5, 7.2 => 7)
+      return Math.round(value / step) * step;
+    }
+
+    function plural(val, word, alt) {
+      return val === 1 ? word : (alt || word + 's');
+    }
+
+    function renderIngredients(people) {
+      if (!people || people < 1) return '';
+      // Scale up
+      const potatoes = roundTo(perPerson.potatoes * people, 0.5); // round to 0.5 lb
+      const butter = roundTo(perPerson.butter * people, 1); // whole tbsp
+      const creamCheese = roundTo(perPerson.creamCheese * people, 1); // oz
+      const cheese = roundTo(perPerson.cheese * people, 0.25); // 1/4 cup
+      const milk = roundTo(perPerson.milk * people / 16, 0.25); // cups (16 tbsp = 1 cup)
+      const cheeseBags = Math.max(1, Math.ceil(cheese / 2)); // assume 2 cups/bag
+
+      return `
+        <ul class="space-y-0.5">
+          <li><span class="font-bold text-amber-300">${potatoes}</span> ${plural(potatoes, 'lb potato', 'lbs potatoes')} <span class="text-xs text-gray-300">(≈${Math.round(potatoes * 3)} med)</span></li>
+          <li><span class="font-bold text-amber-300">${butter}</span> ${plural(butter, 'tbsp butter')}</li>
+          <li><span class="font-bold text-amber-300">${creamCheese}</span> oz cream cheese <span class="text-xs text-gray-300">(${Math.ceil(creamCheese/8)} block${creamCheese>=16?'s':''})</span></li>
+          <li><span class="font-bold text-amber-300">${cheese}</span> cup${cheese>1?'s':''} shredded cheese <span class="text-xs text-gray-300">(${cheeseBags} bag${cheeseBags>1?'s':''})</span></li>
+          <li><span class="font-bold text-amber-300">${milk}</span> cup${milk!==1?'s':''} milk/cream</li>
+          <li>Salt & pepper. <span class="text-xs text-gray-300">(Garlic, chives, extra cheese: opt.)</span></li>
+        </ul>
+      `;
+    }
+
+    function update() {
+      const people = parseInt(document.getElementById('people').value, 10);
+      document.getElementById('ingredients').innerHTML = renderIngredients(people);
+    }
+
+    // Initial render & event binding
+    document.getElementById('people').addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
