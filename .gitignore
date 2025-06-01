@@ -1,0 +1,30 @@
+# Node/npm artifacts (if ever added)
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# VSCode & editor settings
+.vscode/
+*.swp
+*.swo
+
+# macOS/Linux
+.DS_Store
+*.orig
+
+# Logs/temp
+*.log
+*.tmp
+
+# Build/output directories
+dist/
+build/
+out/
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+
+# GitHub Pages artifacts
+docs/
